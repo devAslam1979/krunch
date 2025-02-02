@@ -1,169 +1,184 @@
 "use client";
-// import { useForm } from "react-hook-form";
-// import { useState } from "react";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { useRouter } from "next/navigation";
-// import Link from "next/link";
-// import { LoginFormData, LoginSchema } from "@/app/schema/loginSchema";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { SignupFormData, SignupSchema } from "@/app/schema/signupSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import VerifyOtp from "@/app/components/verifyOtp";
+import { handleNumericInput } from "@/app/utils/helper";
+import Image from "next/image";
+import MovingBanner from "@/app/components/movingBanner";
 // import api from "@/app/utils/axiosInstance";
-// import Cookies from "js-cookie";
-// import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-// import { useAuth } from "@/app/context/AuthProvider";
-// import { useDispatch } from "react-redux";
-// import { AppDispatch } from "@/redux/store";
-// import { setUser } from "@/redux/slices/userSlice";
 // import { useSearchParams } from "next/navigation";
 // import { API_ENDPOINTS } from "@/app/constants/apiEndpoints";
 // import { withAuthRedirection } from "@/app/utils/withAuthRedirection";
 
-const LoginPage = () => {
-  // const router = useRouter();
-  // const dispatch = useDispatch<AppDispatch>();
-  // const { setAuth } = useAuth();
+const SignupPage = () => {
   // const [apiError, setApiError] = useState<string | null>(null);
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [signupData, setSignupData] = useState<any>({});
+  const [activeButton, setActiveButton] = useState<"login" | "signup">("login");
+
+  const handleOTP = () => {
+    setIsOtpSent(true);
+  };
   // const [showPassword, setShowPassword] = useState(false);
 
-  // const searchParams = useSearchParams();
-  // const tournament_id = searchParams.get("tournament_id");
-  // const slot_id = searchParams.get("slot_id");
-  // const redirect = searchParams.get("redirect") || "/";
+  // const searchParamas = useSearchParams();
+  // const tournament_id = searchParamas.get("tournament_id");
+  // const slot_id = searchParamas.get("slot_id");
 
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors, isSubmitting },
-  // } = useForm<LoginFormData>({
-  //   resolver: zodResolver(LoginSchema),
-  // });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(SignupSchema),
+  });
 
-  // const onSubmit = async (data: LoginFormData) => {
+  // const onSubmit = async (data: SignupFormData) => {
   //   setApiError(null);
   //   try {
-  //     const res = await api.post(API_ENDPOINTS.LOGIN, data);
-  //     if (res.status === 200) {
-  //       const { access, refresh } = res.data.data;
-  //       Cookies.set("access_token", access, {
-  //         expires: 0.0208, // 30 minutes expressed in days (30 minutes = 1/48 of a day)
-  //         secure: true,
-  //       });
-  //       Cookies.set("refresh_token", refresh, {
-  //         expires: 7,
-  //         secure: true,
-  //       });
-  //       setAuth(true);
-  //       const userRes = await api.get(API_ENDPOINTS.GET_USER);
-  //       if (userRes.status === 200) {
-  //         dispatch(setUser(userRes?.data?.data));
-  //       }
-  //       const redirectPath =
-  //         tournament_id && slot_id
-  //           ? `/?tournament_id=${tournament_id}&slot_id=${slot_id}`
-  //           : redirect;
-  //       router.push(redirectPath);
+  //     const response = await api.post(API_ENDPOINTS.SIGNUP_VERIFY, data);
+  //     if (response.status === 200) {
+  //       setSignupData({ ...data, otp_id: response?.data?.data?.otp_id });
+  //       setIsOtpSent(true);
   //     } else {
-  //       setApiError("Login failed. Please try again.");
+  //       setApiError(response?.data?.message);
   //     }
   //   } catch (error: any) {
-  //     setApiError(
-  //       error?.response?.data?.message || "An error occurred. Please try again."
-  //     );
+  //     setApiError(error?.response?.data?.message);
   //   }
   // };
 
   return (
-    <div className="min-h-[calc(100vh-84px)] flex items-center justify-center">
-      <div className=" py-8 px-20 rounded-lg shadow-md w-[560px] bg-[#141517]">
-        <h2 className="text-2xl font-semibold text-white mb-6 text-center">
-          Login to your Account
-        </h2>
-
-        {/* {apiError && (
-          <div className="mb-4 p-2 bg-red-500 text-white rounded">
-            {apiError}
-          </div>
-        )} */}
-
-        {/* <form onSubmit={handleSubmit(onSubmit)}> */}
-        {/* <form>
-          <div className="mb-4">
-            <label className="block font-medium leading-6 text-white mb-2">
-              Email / Mobile
-            </label>
-            <input
-              type="text"
-              className="w-full p-2 bg-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-black"
-              placeholder="Enter your email / mobile"
-              {...register("login_identifier")}
-            />
-            {errors.login_identifier && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.login_identifier.message}
-              </p>
-            )}
-          </div>
-          <div className="mb-4">
-            <div className="flex items-center justify-between">
-              <label className="block font-medium leading-6 text-white mb-2">
-                Password
-              </label>
-              <div className="text-sm">
-                <Link
-                  href={`/forgot-password${
-                    tournament_id && slot_id
-                      ? `?tournament_id=${tournament_id}&slot_id=${slot_id}`
-                      : ""
-                  }`}
-                  className="font-medium text-red-500 hover:underline "
-                >
-                  Forgot password?
-                </Link>
-              </div>
-            </div>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                className="w-full p-2 bg-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-black"
-                placeholder="Create a password"
-                {...register("password")}
-              />
+    <div className="overflow-y-auto">
+      <div className="relative w-full h-[170px] ">
+        <Image src="/images/img1.jpg" alt="logo" fill />
+      </div>
+      <MovingBanner text="Welcome to Krunch! Get amazing deals now!" />
+      {!isOtpSent ? (
+        <div className="flex flex-col justify-center my-3 bg-slate-800 py-5 mx-3 rounded-[20px]">
+          <div className="flex justify-center items-center">
+            <div className="bg-slate-600 rounded-full flex">
               <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
+                className={`text-white text-base font-semibold rounded-full py-2.5 px-10 transition-colors ${
+                  activeButton === "login" && "bg-red-600"
+                }`}
+                onClick={() => setActiveButton("login")}
               >
-                {showPassword ? (
-                  <EyeIcon
-                    aria-hidden="true"
-                    className="ml-2 h-5 w-5 text-black text-medium"
-                  />
-                ) : (
-                  <EyeSlashIcon
-                    aria-hidden="true"
-                    className="ml-2 h-5 w-5 text-black text-medium"
-                  />
-                )}
+                Login
+              </button>
+              <button
+                className={`text-white text-base font-semibold rounded-full py-2.5 px-10 transition-colors ${
+                  activeButton === "signup" && "bg-red-600"
+                }`}
+                onClick={() => setActiveButton("signup")}
+              >
+                Signup
               </button>
             </div>
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </p>
-            )}
           </div>
 
-          <div className="mt-6">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
-            >
-              {isSubmitting ? "Login..." : "Login"}
-            </button>
+          <div className=" py-5 px-5 w-full">
+            {/* {apiError && (
+            <div className="mb-4 p-2 bg-red-500 text-white rounded">
+              {apiError}
+            </div>
+          )} */}
+
+            {/* <form onSubmit={handleSubmit(onSubmit)}> */}
+            <form>
+              {activeButton === "signup" && (
+                <div className="mb-4 flex items-center gap-4">
+                  <div className="flex items-center justify-end text-white">
+                    <Image
+                      src="/icons/user.svg"
+                      alt="logo"
+                      height={24}
+                      width={24}
+                    />
+
+                    {/* <span>+91</span> */}
+                  </div>
+                  <div className="flex-1 ">
+                    {/* <label className="block font-medium leading-6 text-white mb-2">
+                    Name
+                  </label> */}
+                    <input
+                      type="text"
+                      className="w-full p-2 bg-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                      placeholder="Enter your name"
+                      {...register("name")}
+                    />
+                  </div>
+                  {errors.name && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.name.message}
+                    </p>
+                  )}
+                </div>
+              )}
+              <div className="mb-4 flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  <Image
+                    src="/icons/flag.svg"
+                    alt="logo"
+                    height={24}
+                    width={24}
+                  />
+                  {/* <span className="text-white">+91</span> */}
+                </div>
+                <div className="flex-1">
+                  {/* <label className="block font-medium leading-6 text-white mb-2">
+                    Mobile
+                  </label> */}
+                  <div className="flex item-center w-full  bg-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-black">
+                    <span className="py-2 pl-2">+91</span>
+                    <input
+                      type="text"
+                      maxLength={10}
+                      className="w-full p-2 bg-transparent outline-none focus:ring-0  text-black"
+                      placeholder="Enter your mobile number"
+                      {...register("phone")}
+                      onInput={handleNumericInput}
+                    />
+                  </div>
+                </div>
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.phone.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="mt-6 flex justify-center items-center">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  onClick={handleOTP}
+                  className="flex w-fit justify-center text-base rounded-full bg-gray-500 px-12 py-2.5 font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isSubmitting
+                    ? "Loading..."
+                    : activeButton === "login"
+                    ? "Login"
+                    : "Signup"}
+                </button>
+              </div>
+            </form>
           </div>
-        </form> */}
+        </div>
+      ) : (
+        <VerifyOtp setIsOtpSent={setIsOtpSent} signupData={signupData} />
+      )}
+
+      <div className="relative w-full h-[170px] ">
+        <Image src="/images/hero1.jpg" alt="logo" fill />
       </div>
     </div>
   );
 };
-// export default withAuthRedirection(LoginPage);
-export default LoginPage;
+
+export default SignupPage;
+// export default withAuthRedirection(SignupPage);

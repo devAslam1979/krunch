@@ -1,4 +1,5 @@
 import Image from "next/image";
+import MovingBanner from "./components/movingBanner";
 export default function Home() {
   const dummyData = [
     { id: 1, points: 50, date: "2025-01-01" },
@@ -29,7 +30,8 @@ export default function Home() {
       <div className="relative w-full  h-[170px]">
         <Image src="/images/img1.jpg" alt="logo" fill />
       </div>
-      <div className="h-8 bg-orange-400"></div>
+      <MovingBanner text="Welcome to Krunch! Get amazing deals now!" />
+
       <div className="flex justify-center items-center mt-3">
         <button className="bg-[#4d4b49] text-white text-base font-semibold rounded-full py-2 px-10 transition-colors">
           Download Menu
@@ -57,7 +59,7 @@ export default function Home() {
             </tr>
           </thead>
         </table>
-        <div className="overflow-y-auto max-h-[220px]">
+        <div className="overflow-y-auto max-h-[220px]  scrollbar-thin scrollbar-thumb-orange-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-track-gray-200">
           <table className="min-w-full table-auto">
             <tbody>
               {dummyData.map((item) => (

@@ -27,11 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased max-w-[500px] mx-auto`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased max-w-[500px] mx-auto `}
       >
         <div>
           <Navbar />
-          <main className="bg-[#fefaed] h-[calc(100vh-109px)] overflow-y-auto">
+          <main className="bg-[#fefaed] h-[calc(100vh-109px)] overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-gray-200">
             {children}
           </main>
           <Footer />

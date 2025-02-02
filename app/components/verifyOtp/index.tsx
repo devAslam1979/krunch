@@ -121,17 +121,17 @@ const VerifyOtp = ({ setIsOtpSent, signupData }: VerifyOtpProps) => {
   }, [countdown]);
 
   return (
-    <div className="flex flex-col items-center justify-center py-8 px-20 rounded-lg shadow-md w-[560px] bg-[#0a1228]">
-      <h2 className="text-2xl font-bold text-center text-white mb-6">
+    <div className="flex flex-col justify-center my-3 bg-slate-800 py-5 mx-3 rounded-[20px]">
+      <h2 className="text-2xl font-bold text-center text-white mb-4">
         Enter Verification Code
       </h2>
-      <div className="mb-6">
-        <p className="text-white text-center mb-4">
-          We have sent a verification code on your email
+      <div className="mb-3">
+        <p className="text-white text-sm text-center mb-4">
+          We have sent a verification code on your mobile
         </p>
         <div className="flex justify-center">
           <span className="text-white font-bold text-xl">
-            {signupData?.phone}
+            {signupData?.phone ?? "7667658083"}
           </span>
           <PencilSquareIcon
             aria-hidden="true"
@@ -142,7 +142,7 @@ const VerifyOtp = ({ setIsOtpSent, signupData }: VerifyOtpProps) => {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-8 px-12">
+        <div className="mb-5 px-12 flex justify-center items-center">
           <Controller
             name="otp"
             control={control}
@@ -185,13 +185,15 @@ const VerifyOtp = ({ setIsOtpSent, signupData }: VerifyOtpProps) => {
           <p className="text-red-500 text-center mb-4">{apiError}</p>
         )}
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          {isSubmitting ? "Signing up..." : "Sign Up"}
-        </button>
+        <div className="mt-6 flex justify-center items-center">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex w-fit justify-center text-base rounded-full bg-gray-500 px-12 py-2.5 font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {isSubmitting ? "Signing up..." : "Sign Up"}
+          </button>
+        </div>
       </form>
 
       <div className="text-center mt-6">

@@ -40,6 +40,28 @@ const Navbar = () => {
           </li>
         </ul>
       </div> */}
+
+      <div
+        className={`fixed md:absolute top-0 left-0 z-[99999] h-screen max-w-[300px] w-64 border-l py-2.5 overflow-hidden bg-white transform transition-transform duration-300 
+          ${
+            isOpen
+              ? "translate-x-0 md:w-full  px-4"
+              : "-translate-x-full md:w-0 px-0"
+          }
+          `}
+      >
+        <button
+          onClick={() => setIsOpen(false)}
+          className="self-end text-gray-600"
+        >
+          <XMarkIcon className="h-7 w-7" />
+        </button>
+        <ul className="space-y-4 ">
+          {/* <li className="p-2 hover:bg-gray-200 cursor-pointer">Profile</li>
+          <li className="p-2 hover:bg-gray-200 cursor-pointer">Settings</li> */}
+          <li className="p-2 hover:bg-gray-200 cursor-pointer ">Logout</li>
+        </ul>
+      </div>
     </nav>
   );
 };
