@@ -8,6 +8,7 @@ import VerifyOtp from "@/app/components/verifyOtp";
 import { handleNumericInput } from "@/app/utils/helper";
 import Image from "next/image";
 import MovingBanner from "@/app/components/movingBanner";
+import Footer from "@/app/components/footer";
 // import api from "@/app/utils/axiosInstance";
 // import { useSearchParams } from "next/navigation";
 // import { API_ENDPOINTS } from "@/app/constants/apiEndpoints";
@@ -52,8 +53,8 @@ const SignupPage = () => {
   // };
 
   return (
-    <div className="overflow-y-auto">
-      <div className="relative w-full h-[170px] ">
+    <div className="overflow-y-auto  h-full">
+      <div className="relative w-full h-[208px] ">
         <Image src="/images/img1.jpg" alt="logo" fill />
       </div>
       <MovingBanner text="Welcome to Krunch! Get amazing deals now!" />
@@ -157,7 +158,7 @@ const SignupPage = () => {
                   type="submit"
                   disabled={isSubmitting}
                   onClick={handleOTP}
-                  className="flex w-fit justify-center text-base rounded-full bg-gray-500 px-12 py-2.5 font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
+                  className="flex w-fit justify-center text-base rounded-full px-12 py-2.5 font-semibold leading-6 text-white shadow-sm bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {isSubmitting
                     ? "Loading..."
@@ -173,8 +174,11 @@ const SignupPage = () => {
         <VerifyOtp setIsOtpSent={setIsOtpSent} signupData={signupData} />
       )}
 
-      <div className="relative w-full h-[170px] ">
+      <div className="relative w-full h-[208px] ">
         <Image src="/images/hero1.jpg" alt="logo" fill />
+      </div>
+      <div className="fixed bottom-0 left-0 right-0">
+        <Footer />
       </div>
     </div>
   );

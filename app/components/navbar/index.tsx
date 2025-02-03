@@ -42,7 +42,7 @@ const Navbar = () => {
       </div> */}
 
       <div
-        className={`fixed md:absolute top-0 left-0 z-[99999] h-screen max-w-[300px] w-64 border-l py-2.5 overflow-hidden bg-white transform transition-transform duration-300 
+        className={`fixed md:absolute top-0 left-0 z-[99999] h-screen max-w-[170px] w-64 border-l py-2.5 overflow-hidden bg-white transform transition-transform duration-300 
           ${
             isOpen
               ? "translate-x-0 md:w-full  px-4"
@@ -56,11 +56,11 @@ const Navbar = () => {
         >
           <XMarkIcon className="h-7 w-7" />
         </button>
-        <ul className="space-y-4 ">
-          {/* <li className="p-2 hover:bg-gray-200 cursor-pointer">Profile</li>
-          <li className="p-2 hover:bg-gray-200 cursor-pointer">Settings</li> */}
-          <li className="p-2 hover:bg-gray-200 cursor-pointer ">Logout</li>
-        </ul>
+        <div className="mt-4 flex justify-center">
+          <button className="bg-[#4d4b49] text-white text-base font-semibold rounded-full py-2 px-6 transition-colors">
+            Logout
+          </button>
+        </div>
       </div>
     </nav>
   );

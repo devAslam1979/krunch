@@ -31,10 +31,9 @@ export default function RootLayout({
       >
         <div>
           <Navbar />
-          <main className="bg-[#fefaed] h-[calc(100vh-109px)] overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-gray-200">
+          <main className="h-[calc(100vh-48px)] bg-[#fefaed] overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-gray-200">
             {children}
           </main>
-          <Footer />
         </div>
       </body>
     </html>
