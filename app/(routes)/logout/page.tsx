@@ -1,11 +1,10 @@
 "use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 // import Cookies from "js-cookie";
 // import { useAuth } from "@/app/context/AuthProvider";
 
 const LogoutPage = () => {
-  const router = useRouter();
+  // const router = useRouter();
   // const { setAuth } = useAuth();
 
   // useEffect(() => {

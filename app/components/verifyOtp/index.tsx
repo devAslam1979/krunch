@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import OtpInput from "react-otp-input";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { useForm, Controller } from "react-hook-form";
@@ -25,7 +25,7 @@ interface VerifyOtpProps {
 }
 
 const VerifyOtp = ({ setIsOtpSent, signupData }: VerifyOtpProps) => {
-  const router = useRouter();
+  // const router = useRouter();
   const [apiError, setApiError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(30);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
@@ -38,7 +38,7 @@ const VerifyOtp = ({ setIsOtpSent, signupData }: VerifyOtpProps) => {
     formState: { errors, isSubmitting },
   } = useForm<FormData>();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async () => {
     setApiError(null);
     // try {
     //   const res = await api.post(API_ENDPOINTS.SIGNUP, {

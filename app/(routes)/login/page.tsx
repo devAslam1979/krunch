@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { SignupFormData, SignupSchema } from "@/app/schema/signupSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
+// import Link from "next/link";
 import VerifyOtp from "@/app/components/verifyOtp";
 import { handleNumericInput } from "@/app/utils/helper";
 import Image from "next/image";
@@ -17,7 +17,8 @@ import Footer from "@/app/components/footer";
 const SignupPage = () => {
   // const [apiError, setApiError] = useState<string | null>(null);
   const [isOtpSent, setIsOtpSent] = useState(false);
-  const [signupData, setSignupData] = useState<any>({});
+  // const [signupData, setSignupData] = useState<any>({});
+  const [signupData] = useState<SignupFormData>({} as SignupFormData);
   const [activeButton, setActiveButton] = useState<"login" | "signup">("login");
 
   const handleOTP = () => {
@@ -31,7 +32,7 @@ const SignupPage = () => {
 
   const {
     register,
-    handleSubmit,
+    // handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SignupFormData>({
     resolver: zodResolver(SignupSchema),
