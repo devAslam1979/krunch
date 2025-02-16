@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Pagination from "./components/pagination";
-import { set } from "zod";
 import FullPageLoader from "./components/common/FullPageLoader";
 const Home = () => {
   const [apiError, setApiError] = useState<string | null>(null);
@@ -44,8 +43,11 @@ const Home = () => {
         setBanner(response?.data);
       }
       setIsLoading(false);
+      console.log(error)
     } catch (error: any) {
       setError(error);
+      console.log("error", error);
+      console.log(apiError)
     }
   };
   useEffect(() => {

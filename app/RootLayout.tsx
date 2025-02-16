@@ -1,6 +1,5 @@
 "use client";
 
-import localFont from "next/font/local";
 import Navbar from "./components/navbar";
 import { ToastContainer } from "react-toastify";
 import "./globals.css";
