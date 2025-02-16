@@ -73,12 +73,12 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           key={index}
           onClick={() => handlePageClick(page)}
-          className={`px-4 py-2 border rounded ${
+          className={`px-4 py-2 border border-red-500 rounded ${
             page === currentPage
               ? "bg-red-500 text-black"
               : page === "..."
               ? "text-gray-500 cursor-default"
-              : "bg-black hover:bg-gray-100"
+              : " hover:bg-red-500"
           }`}
           disabled={page === "..."}
         >

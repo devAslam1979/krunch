@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -7,16 +6,12 @@ import Image from "next/image";
 import { API_ENDPOINTS } from "@/app/constants/apiEndpoints";
 import api from "@/app/utils/axiosInstance";
 import { SocialIcon } from "@/app/types/common";
+import { useAuth } from "@/app/context/AuthProvider";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [socialIcons, setSocialIcons] = useState<SocialIcon[]>([]);
-
-  const options = [
-    { href: "#", icon: "icons/whatsapp.svg" },
-    { href: "#", icon: "icons/instagram.svg" },
-    { href: "#", icon: "icons/youtube.svg" },
-  ];
+  const { isAuthenticated } = useAuth();
 
   const fetchSocialIcons = async () => {
     try {
@@ -28,6 +23,7 @@ const Navbar = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     fetchSocialIcons();
   }, []);
@@ -41,9 +37,9 @@ const Navbar = () => {
         <Bars3Icon className="h-7 w-7 text-black" />
       </button>
       <div className="flex gap-5">
-        {options.map((option, index) => (
-          <Link href={option.href} key={index}>
-            <Image width={36} height={36} src={option.icon} alt="icon" />
+        {socialIcons.map((icon, index) => (
+          <Link href={icon.link} target="_blank" key={index}>
+            <Image width={32} height={32} src={icon.image} alt="icon" />
           </Link>
         ))}
       </div>
@@ -67,10 +63,11 @@ const Navbar = () => {
         </button>
         <div className="mt-4 flex justify-center">
           <Link
-            href={"/logout"}
+            href={isAuthenticated ? "/logout" : "/login"}
+            onClick={() => setIsOpen(false)}
             className="bg-[#4d4b49] text-white text-base font-semibold rounded-full py-2 px-6 transition-colors"
           >
-            Logout
+            {isAuthenticated ? "Logout" : "Login"}
           </Link>
         </div>
       </div>

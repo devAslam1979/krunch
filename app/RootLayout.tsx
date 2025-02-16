@@ -9,17 +9,6 @@ import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import { Suspense } from "react";
 
-// const geistSans = localFont({
-//   src: "./fonts/GeistVF.woff",
-//   variable: "--font-geist-sans",
-//   weight: "100 900",
-// });
-// const geistMono = localFont({
-//   src: "./fonts/GeistMonoVF.woff",
-//   variable: "--font-geist-mono",
-//   weight: "100 900",
-// });
-
 export default function RootLayout({
   children,
 }: {
@@ -32,7 +21,7 @@ export default function RootLayout({
         <Provider store={store}>
           <AuthProvider>
             <Navbar />
-            <main className="h-[calc(100vh-48px)] bg-[#fefaed] overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-gray-200">
+            <main className="h-[calc(100vh-52px)] bg-[#fefaed] overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-gray-200">
               {children}
             </main>
           </AuthProvider>

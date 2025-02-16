@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { setUser } from "@/redux/slices/userSlice";
 import { API_ENDPOINTS } from "@/app/constants/apiEndpoints";
-import { LoginFormData } from "@/app/schema/loginSchema";
+import { LoginData, SignupData } from "@/app/types/common";
 
 interface FormData {
   otp: string;
@@ -22,7 +22,7 @@ interface FormData {
 
 interface VerifyOtpProps {
   setIsOtpSent: (value: boolean) => void;
-  data: SignupFormData | LoginFormData;
+  data: SignupData | LoginData;
   activeButton: "login" | "signup";
 }
 
@@ -40,8 +40,7 @@ const VerifyOtp = ({ setIsOtpSent, data, activeButton }: VerifyOtpProps) => {
     formState: { errors, isSubmitting },
   } = useForm<FormData>();
 
-  const onSubmit = async (formData: any) => {
-    console.log(data);
+  const onSubmit = async (formData: FormData) => {
     setApiError(null);
     try {
       const endPoint =
@@ -66,17 +65,26 @@ const VerifyOtp = ({ setIsOtpSent, data, activeButton }: VerifyOtpProps) => {
           dispatch(setUser(userRes?.data?.data));
         }
         router.push("/");
-        toast.success("Account created successfully!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.success(
+          activeButton === "login"
+            ? "Logged in successfully!"
+            : "Account created successfully!",
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
       } else {
-        setApiError("Signup failed. Please try again.");
+        setApiError(
+          activeButton === "login"
+            ? "Login failed. Please try again."
+            : "Signup failed. Please try again."
+        );
       }
     } catch (error: any) {
       setApiError(
@@ -93,7 +101,7 @@ const VerifyOtp = ({ setIsOtpSent, data, activeButton }: VerifyOtpProps) => {
         phone: data.phone,
       });
       if (res.status === 200) {
-        toast.success("OTP sent successfully on your email!", {
+        toast.success("OTP sent successfully on your mobile!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,

@@ -1,6 +1,6 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SignupFormData, SignupSchema } from "@/app/schema/signupSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import VerifyOtp from "@/app/components/verifyOtp";
@@ -12,14 +12,16 @@ import { API_ENDPOINTS } from "@/app/constants/apiEndpoints";
 import { LoginFormData, LoginSchema } from "@/app/schema/loginSchema";
 import { withAuthRedirection } from "@/app/utils/withAuthRedirection";
 import FullPageLoader from "@/app/components/common/FullPageLoader";
+import { BannerResponse, LoginData, SignupData } from "@/app/types/common";
+import ServerError from "@/app/components/common/ServerError";
 
 const LoginPage = () => {
   const [apiError, setApiError] = useState<string | null>(null);
   const [isOtpSent, setIsOtpSent] = useState(false);
-  const [signupData, setSignupData] = useState<any>({});
-  const [loginData, setLoginData] = useState<any>({});
+  const [signupData, setSignupData] = useState<SignupData>({} as SignupData);
+  const [loginData, setLoginData] = useState<LoginData>({} as LoginData);
   const [activeButton, setActiveButton] = useState<"login" | "signup">("login");
-  const [banner, setBanner] = useState<any>();
+  const [banner, setBanner] = useState<BannerResponse>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -32,7 +34,7 @@ const LoginPage = () => {
         setBanner(response?.data);
       }
       setIsLoading(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       setError(error);
     } finally {
       setIsLoading(false);
@@ -88,6 +90,11 @@ const LoginPage = () => {
     }
   };
 
+  const handleButtonClick = (buttonType: "login" | "signup") => {
+    setActiveButton(buttonType);
+    setApiError(null);
+  };
+
   if (isLoading) {
     return (
       <div>
@@ -95,7 +102,10 @@ const LoginPage = () => {
       </div>
     );
   }
-  console.log("banner", baseUrl + banner?.[0]?.image);
+
+  if (error?.response?.status === 500) {
+    return <ServerError />;
+  }
 
   return (
     <div className="overflow-y-auto  h-full">
@@ -111,7 +121,7 @@ const LoginPage = () => {
                 className={`text-white text-base font-semibold rounded-full py-2.5 px-10 transition-colors ${
                   activeButton === "login" && "bg-red-600"
                 }`}
-                onClick={() => setActiveButton("login")}
+                onClick={() => handleButtonClick("login")}
               >
                 Login
               </button>
@@ -119,7 +129,7 @@ const LoginPage = () => {
                 className={`text-white text-base font-semibold rounded-full py-2.5 px-10 transition-colors ${
                   activeButton === "signup" && "bg-red-600"
                 }`}
-                onClick={() => setActiveButton("signup")}
+                onClick={() => handleButtonClick("signup")}
               >
                 Signup
               </button>
@@ -167,7 +177,7 @@ const LoginPage = () => {
                 <div className="mt-6 flex justify-center items-center">
                   <button
                     type="submit"
-                    // disabled={loginIsSubmitting}
+                    disabled={loginIsSubmitting}
                     className="flex w-fit justify-center text-base rounded-full px-12 py-2.5 font-semibold leading-6 text-white shadow-sm bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
                   >
                     {loginIsSubmitting ? "Loading..." : "Login"}
