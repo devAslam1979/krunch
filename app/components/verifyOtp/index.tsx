@@ -164,7 +164,13 @@ const VerifyOtp = ({ setIsOtpSent, data, activeButton }: VerifyOtpProps) => {
                 onChange={field.onChange}
                 numInputs={4}
                 renderInput={(props) => (
-                  <input {...props} onInput={handleNumericInput} />
+                  <input
+                    {...props}
+                    onInput={handleNumericInput}
+                    type="tel"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                  />
                 )}
                 shouldAutoFocus
                 containerStyle="space-x-2"
