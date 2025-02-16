@@ -7,8 +7,7 @@ const PhoneSchema = z
   .length(10, "Please enter a valid mobile number.");
 
 export const LoginSchema = z.object({
-  login_identifier: PhoneSchema,
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  phone: PhoneSchema,
 });
 
 export type LoginFormData = z.infer<typeof LoginSchema>;

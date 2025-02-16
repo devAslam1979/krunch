@@ -1,66 +1,110 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { SignupFormData, SignupSchema } from "@/app/schema/signupSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import Link from "next/link";
 import VerifyOtp from "@/app/components/verifyOtp";
 import { handleNumericInput } from "@/app/utils/helper";
 import Image from "next/image";
 import MovingBanner from "@/app/components/movingBanner";
-import Footer from "@/app/components/footer";
-// import api from "@/app/utils/axiosInstance";
-// import { useSearchParams } from "next/navigation";
-// import { API_ENDPOINTS } from "@/app/constants/apiEndpoints";
-// import { withAuthRedirection } from "@/app/utils/withAuthRedirection";
+import api from "@/app/utils/axiosInstance";
+import { API_ENDPOINTS } from "@/app/constants/apiEndpoints";
+import { LoginFormData, LoginSchema } from "@/app/schema/loginSchema";
+import { withAuthRedirection } from "@/app/utils/withAuthRedirection";
+import FullPageLoader from "@/app/components/common/FullPageLoader";
 
-const SignupPage = () => {
-  // const [apiError, setApiError] = useState<string | null>(null);
+const LoginPage = () => {
+  const [apiError, setApiError] = useState<string | null>(null);
   const [isOtpSent, setIsOtpSent] = useState(false);
-  // const [signupData, setSignupData] = useState<any>({});
-  const [signupData] = useState<SignupFormData>({} as SignupFormData);
+  const [signupData, setSignupData] = useState<any>({});
+  const [loginData, setLoginData] = useState<any>({});
   const [activeButton, setActiveButton] = useState<"login" | "signup">("login");
+  const [banner, setBanner] = useState<any>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<any>(null);
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  const handleOTP = () => {
-    setIsOtpSent(true);
+  const fetchBanner = async () => {
+    setIsLoading(true);
+    try {
+      const response = await api.get(API_ENDPOINTS.AUTH_BANNER);
+      if (response.status === 200) {
+        setBanner(response?.data);
+      }
+      setIsLoading(false);
+    } catch (error: any) {
+      setError(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
-  // const [showPassword, setShowPassword] = useState(false);
 
-  // const searchParamas = useSearchParams();
-  // const tournament_id = searchParamas.get("tournament_id");
-  // const slot_id = searchParamas.get("slot_id");
+  useEffect(() => {
+    fetchBanner();
+  }, []);
 
   const {
-    register,
-    // handleSubmit,
-    formState: { errors, isSubmitting },
+    register: signupRegister,
+    handleSubmit: handleSignupSubmit,
+    formState: { errors: signupErrors, isSubmitting: signupIsSubmitting },
   } = useForm<SignupFormData>({
     resolver: zodResolver(SignupSchema),
   });
 
-  // const onSubmit = async (data: SignupFormData) => {
-  //   setApiError(null);
-  //   try {
-  //     const response = await api.post(API_ENDPOINTS.SIGNUP_VERIFY, data);
-  //     if (response.status === 200) {
-  //       setSignupData({ ...data, otp_id: response?.data?.data?.otp_id });
-  //       setIsOtpSent(true);
-  //     } else {
-  //       setApiError(response?.data?.message);
-  //     }
-  //   } catch (error: any) {
-  //     setApiError(error?.response?.data?.message);
-  //   }
-  // };
+  const {
+    register: loginRegister,
+    handleSubmit: handleLoginSubmit,
+    formState: { errors: loginErrors, isSubmitting: loginIsSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(LoginSchema),
+  });
+
+  const onSignupSubmit = async (data: SignupFormData) => {
+    setApiError(null);
+    try {
+      const response = await api.post(API_ENDPOINTS.SIGNUP_VERIFY, data);
+      if (response.status === 200) {
+        setSignupData({ ...data, otp_id: response?.data?.data?.otp_id });
+        setIsOtpSent(true);
+      } else {
+        setApiError(response?.data?.message);
+      }
+    } catch (error: any) {
+      setApiError(error?.response?.data?.message);
+    }
+  };
+  const onLoginSubmit = async (data: LoginFormData) => {
+    setApiError(null);
+    try {
+      const response = await api.post(API_ENDPOINTS.LOGIN_VERIFY, data);
+      if (response.status === 200) {
+        setLoginData({ ...data, otp_id: response?.data?.data?.otp_id });
+        setIsOtpSent(true);
+      } else {
+        setApiError(response?.data?.message);
+      }
+    } catch (error: any) {
+      setApiError(error?.response?.data?.message);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div>
+        <FullPageLoader />
+      </div>
+    );
+  }
+  console.log("banner", baseUrl + banner?.[0]?.image);
 
   return (
     <div className="overflow-y-auto  h-full">
       <div className="relative w-full h-[208px] ">
-        <Image src="/images/img1.jpg" alt="logo" fill />
+        <Image src={`${baseUrl}${banner?.[0]?.image}`} alt="img" fill />
       </div>
       <MovingBanner text="Welcome to Krunch! Get amazing deals now!" />
       {!isOtpSent ? (
-        <div className="flex flex-col justify-center my-3 bg-slate-800 py-5 mx-3 rounded-[20px]">
+        <div className="flex flex-col justify-center my-3 bg-orange-400 py-5 mx-3 rounded-[20px]">
           <div className="flex justify-center items-center">
             <div className="bg-slate-600 rounded-full flex">
               <button
@@ -83,15 +127,55 @@ const SignupPage = () => {
           </div>
 
           <div className=" py-5 px-5 w-full">
-            {/* {apiError && (
-            <div className="mb-4 p-2 bg-red-500 text-white rounded">
-              {apiError}
-            </div>
-          )} */}
+            {apiError && (
+              <div className="mb-4 p-2 bg-red-500 text-white rounded">
+                {apiError}
+              </div>
+            )}
 
-            {/* <form onSubmit={handleSubmit(onSubmit)}> */}
-            <form>
-              {activeButton === "signup" && (
+            {activeButton === "login" ? (
+              <form onSubmit={handleLoginSubmit(onLoginSubmit)}>
+                <div className="mb-4 flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <Image
+                      src="/icons/flag.svg"
+                      alt="logo"
+                      height={24}
+                      width={24}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex item-center w-full  bg-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-black">
+                      <span className="py-2 pl-2">+91</span>
+                      <input
+                        type="text"
+                        maxLength={10}
+                        className="w-full p-2 bg-transparent outline-none focus:ring-0  text-black"
+                        placeholder="Enter your mobile number"
+                        {...loginRegister("phone")}
+                        onInput={handleNumericInput}
+                      />
+                    </div>
+                    {loginErrors.phone && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {loginErrors.phone.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-center items-center">
+                  <button
+                    type="submit"
+                    // disabled={loginIsSubmitting}
+                    className="flex w-fit justify-center text-base rounded-full px-12 py-2.5 font-semibold leading-6 text-white shadow-sm bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {loginIsSubmitting ? "Loading..." : "Login"}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleSignupSubmit(onSignupSubmit)}>
                 <div className="mb-4 flex items-center gap-4">
                   <div className="flex items-center justify-end text-white">
                     <Image
@@ -100,90 +184,76 @@ const SignupPage = () => {
                       height={24}
                       width={24}
                     />
-
-                    {/* <span>+91</span> */}
                   </div>
                   <div className="flex-1 ">
-                    {/* <label className="block font-medium leading-6 text-white mb-2">
-                    Name
-                  </label> */}
                     <input
                       type="text"
                       className="w-full p-2 bg-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                       placeholder="Enter your name"
-                      {...register("name")}
+                      {...signupRegister("name")}
                     />
-                  </div>
-                  {errors.name && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.name.message}
-                    </p>
-                  )}
-                </div>
-              )}
-              <div className="mb-4 flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                  <Image
-                    src="/icons/flag.svg"
-                    alt="logo"
-                    height={24}
-                    width={24}
-                  />
-                  {/* <span className="text-white">+91</span> */}
-                </div>
-                <div className="flex-1">
-                  {/* <label className="block font-medium leading-6 text-white mb-2">
-                    Mobile
-                  </label> */}
-                  <div className="flex item-center w-full  bg-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-black">
-                    <span className="py-2 pl-2">+91</span>
-                    <input
-                      type="text"
-                      maxLength={10}
-                      className="w-full p-2 bg-transparent outline-none focus:ring-0  text-black"
-                      placeholder="Enter your mobile number"
-                      {...register("phone")}
-                      onInput={handleNumericInput}
-                    />
+                    {signupErrors.name && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {signupErrors.name.message}
+                      </p>
+                    )}
                   </div>
                 </div>
-                {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.phone.message}
-                  </p>
-                )}
-              </div>
+                <div className="mb-4 flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <Image
+                      src="/icons/flag.svg"
+                      alt="logo"
+                      height={24}
+                      width={24}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex item-center w-full  bg-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-black">
+                      <span className="py-2 pl-2">+91</span>
+                      <input
+                        type="text"
+                        maxLength={10}
+                        className="w-full p-2 bg-transparent outline-none focus:ring-0  text-black"
+                        placeholder="Enter your mobile number"
+                        {...signupRegister("phone")}
+                        onInput={handleNumericInput}
+                      />
+                    </div>
+                    {signupErrors.phone && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {signupErrors.phone.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-              <div className="mt-6 flex justify-center items-center">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  onClick={handleOTP}
-                  className="flex w-fit justify-center text-base rounded-full px-12 py-2.5 font-semibold leading-6 text-white shadow-sm bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
-                >
-                  {isSubmitting
-                    ? "Loading..."
-                    : activeButton === "login"
-                    ? "Login"
-                    : "Signup"}
-                </button>
-              </div>
-            </form>
+                <div className="mt-6 flex justify-center items-center">
+                  <button
+                    type="submit"
+                    disabled={signupIsSubmitting}
+                    className="flex w-fit justify-center text-base rounded-full px-12 py-2.5 font-semibold leading-6 text-white shadow-sm bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {signupIsSubmitting ? "Loading..." : "Signup"}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       ) : (
-        <VerifyOtp setIsOtpSent={setIsOtpSent} signupData={signupData} />
+        <VerifyOtp
+          setIsOtpSent={setIsOtpSent}
+          data={activeButton === "login" ? loginData : signupData}
+          activeButton={activeButton}
+        />
       )}
 
       <div className="relative w-full h-[208px] ">
-        <Image src="/images/hero1.jpg" alt="logo" fill />
-      </div>
-      <div className="fixed bottom-0 left-0 right-0">
-        <Footer />
+        <Image src={`${baseUrl}${banner?.[1]?.image}`} alt="img" fill />
       </div>
     </div>
   );
 };
 
-export default SignupPage;
-// export default withAuthRedirection(SignupPage);
+export default withAuthRedirection(LoginPage);
